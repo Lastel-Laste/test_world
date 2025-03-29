@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Grid + 캐릭터 (Dude)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r110/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r110/examples/js/loaders/GLTFLoader.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script>
+  // 기본 세팅
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xffffff);
+
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 2, -20);
+  camera.lookAt(0, 2, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+
+  // 바닥 그리드
+  const gridHelper = new THREE.GridHelper(40, 40, 0x999999, 0xcccccc);
+  scene.add(gridHelper);
+
+  const axesHelper = new THREE.AxesHelper(5);
+  scene.add(axesHelper);
+
+  // 조명
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+  dirLight.position.set(0, 10, -10);
+  scene.add(dirLight);
+
+  // 캐릭터 로드
+  const loader = new THREE.GLTFLoader();
+loader.load('https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb', function (gltf) {
+  const model = gltf.scene;
+  model.scale.set(3, 3, 3);         // 보기 좋게 확 키움
+  model.position.set(0, 0, 0);      // 바닥 중앙
+  model.rotation.y = Math.PI;      // 180도 회전해서 정면 보기
+  scene.add(model);
+
+  // 애니메이션 제거 (걷기 모션 X)
+  // -> mixer, action 정의 안 함 = 가만히 서있게 됨
+});
+
+
+  // 기본 루프
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // 리사이즈
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
+</body>
+</html>
+
