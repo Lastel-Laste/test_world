@@ -28,10 +28,10 @@
   controls.dampingFactor = 0.05;
 
 // 카메라가 바라볼 대상을 설정 (여기선 예시로 (0, 2, 0)으로 설정)
-controls.target.set(0, 2, 0);  // 카메라가 바라보는 지점을 설정
+controls.target.set(0, 1, 0);  // 카메라가 바라보는 지점을 설정
 
 // 카메라 초기 위치 설정
-camera.position.set(0, 2.5, 3.5);
+camera.position.set(0, 1, 2);
 
   // 바닥 그리드
   const gridHelper = new THREE.GridHelper(40, 40, 0x999999, 0xcccccc);
@@ -50,12 +50,9 @@ camera.position.set(0, 2.5, 3.5);
   const loader = new THREE.GLTFLoader();
 loader.load('https://files.catbox.moe/jep8kp.glb', function (gltf) {
   const model = gltf.scene;
-  model.scale.set(2, 2, 2);         // 보기 좋게 확 키움
+  model.scale.set(1, 1, 1);
   model.position.set(0, 0, 0);      // 바닥 중앙
   scene.add(model);
-
-  // 애니메이션 제거 (걷기 모션 X)
-  // -> mixer, action 정의 안 함 = 가만히 서있게 됨
 });
 
 
